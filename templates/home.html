@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyBuddy - Home</title>
+  <meta charset="UTF-8">
+  <title>StudyBuddy Home</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Welcome to StudyBuddy!</h1>
-    <p>Manage your study preferences and find your study buddies!</p>
-
-    <!-- Link to edit preferences page -->
-    <a href="/edit_preferences"><button>Edit Study Preferences</button></a>
-
-    <!-- Link to other sections (you can customize these later) -->
-    <a href="/matches"><button>View Matches</button></a>
-    <a href="/chat"><button>Chat</button></a>
-
+  <div class="container">
+    <h1>Welcome to Study Buddy!</h1>
+    <p>Manage your study preferences and connect with fellow learners.</p>
+    <a href="{{ url_for('edit_preferences') }}">
+      <button>Edit Study Preferences</button>
+    </a>
+  </div>
 </body>
 </html>
