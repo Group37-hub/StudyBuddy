@@ -1,4 +1,3 @@
-# Ignore IDE and Python system files
 .idea/
 __pycache__/
 *.pyc
