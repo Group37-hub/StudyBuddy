@@ -17,7 +17,7 @@ def home():
 @app.route('/edit_preferences', methods=['GET', 'POST'])
 def edit_preferences():
     if request.method == 'POST':
-        # update from form
+
         user.update_study_preferences(
             year      = request.form['year'],
             subject   = request.form['subject'],
