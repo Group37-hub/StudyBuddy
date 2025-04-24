@@ -11,7 +11,7 @@ class User:
             self.study_preferences.year = year
         if subject:
             self.study_preferences.subject = subject
-        if gender in ("Girl", "Boy", "Either"):
+        if gender in ("Female", "Male", "Either"):
             self.study_preferences.gender = gender
         if time:
             self.study_preferences.time = time
