@@ -26,14 +26,14 @@ def edit_preferences():
         year = request.form['year']
         subject = request.form['subject']
         gender = request.form['gender']
-        time_preferences = request.form['time']
+        time_preference = request.form['time']
         location = request.form['location']
 
         user.update_study_preferences(
             year=year,
             subject=subject,
             gender=gender,
-            time=time_preferences,
+            time=time_preference,
             location=location
         )
 
