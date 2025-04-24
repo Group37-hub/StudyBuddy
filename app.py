@@ -15,11 +15,6 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/')
-def home():
-    return render_template('home.html')
-
-
 @app.route('/edit_preferences', methods=['GET', 'POST'])
 def edit_preferences():
     if request.method == 'POST':
