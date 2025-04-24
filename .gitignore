@@ -6,6 +6,9 @@ models.iml
 modules.xml
 vcs.xml
 
+models/.idea/
+models/_pycharm_/
+
 __pycache__/
 *.pyc
 *.pyo
@@ -13,8 +16,5 @@ __pycache__/
 __init__.cpython-312.pyc
 study_preferences.cpython-312.pyc
 user.cpython-312.pyc
-
-models/.idea/
-models/_pycharm_/
 
 
