@@ -10,6 +10,10 @@ user = User(
     StudyPreferences("1st", "Computer Science", "Male", "Morning", "Library")
 )
 
+@app.route('/')
+def home():
+    return render_template('home.html')
+
 
 @app.route('/')
 def home():
@@ -19,15 +23,22 @@ def home():
 @app.route('/edit_preferences', methods=['GET', 'POST'])
 def edit_preferences():
     if request.method == 'POST':
+        year = request.form['year']
+        subject = request.form['subject']
+        gender = request.form['gender']
+        time_preferences = request.form['time']
+        location = request.form['location']
 
         user.update_study_preferences(
-            year=request.form['year'],
-            subject=request.form['subject'],
-            gender=request.form['gender'],
-            time=request.form['time'],
-            location=request.form['location']
+            year=year,
+            subject=subject,
+            gender=gender,
+            time=time_preferences,
+            location=location
         )
-        return redirect(url_for('home'))
+
+        success = "Your preferences have been updated successfully!"
+        return render_template('profile.html', user=user, success=success)
 
     return render_template('profile.html', user=user)
 
