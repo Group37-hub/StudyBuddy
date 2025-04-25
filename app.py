@@ -37,7 +37,7 @@ def edit_preferences():
         success = "Study preferences updated successfully!"
         return render_template('profile.html', user=user, success=success)
 
-        return render_template('profile.html', user=user)
+    return render_template('profile.html', user=user)
 
 
 if __name__ == '__main__':
