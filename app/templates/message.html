@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4" style="max-width: 700px; height: 90vh;">
+  <div class="chat-wrapper d-flex flex-column h-100">
+
+    <h3 class="text-center mb-3">Chat with {{ other_user.name }}</h3>
+
+    <!-- chat box for messages -->
+    <div class="chat-messages border rounded bg-light p-3 flex-grow-1 d-flex flex-column" style="overflow-y: auto; position: relative;">
+      {% for msg in messages %}
+        <div class="mb-3 d-flex {% if msg.sender_id == current_user_id %}justify-content-end{% else %}justify-content-start{% endif %}">
+          <div class="p-2 rounded {% if msg.sender_id == current_user_id %}bg-success text-white{% else %}bg-secondary text-white{% endif %}" style="max-width: 70%;">
+            <div><strong>{{ 'You' if msg.sender_id == current_user_id else other_user.name }}</strong></div>
+            <div>{{ msg.content }}</div>
+            <div class="text-end small mt-1">{{ msg.timestamp.strftime('%Y-%m-%d %H:%M') }}</div>
+            {% if msg.sender_id == current_user_id %}
+                <!-- delete button -->
+                <form action="{{ url_for('delete_message', msg_id=msg.id) }}" method="GET" class="text-end mt-1">
+                <button type="submit" class="btn btn-sm btn-outline-light btn-danger">Delete</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      {% else %}
+        <p class="text-center text-muted">No messages yet.</p>
+      {% endfor %}
+    </div>
+
+    <!-- modal trigger button at bottom of the chat box -->
+    <div class="chat-footer mt-auto">
+      <button type="button" class="btn btn-light w-100" data-bs-toggle="modal" data-bs-target="#studyRoomModal">
+        Ready to book a study room? Click here!
+      </button>
+    </div>
+
+{#    <!-- message input form, og with no openers -->#}
+{#    <div class="chat-input card mt-3">#}
+{#      <div class="card-body">#}
+{#        <form method="POST">#}
+{#          {{ form.hidden_tag() }}#}
+{#          <div class="mb-3">#}
+{#            {{ form.message.label(class="form-label") }}#}
+{#            {{ form.message(class="form-control", rows=2) }}#}
+{#            {% for error in form.message.errors %}#}
+{#              <div class="text-danger">{{ error }}</div>#}
+{#            {% endfor %}#}
+{#          </div>#}
+{#          {{ form.submit(class="btn btn-primary") }}#}
+{#        </form>#}
+{#      </div>#}
+{#    </div>#}
+
+    <!-- message input form with opening lines -->
+    <div class="chat-input card mt-3">
+        <div class="card-body">
+
+        <!-- openers -->
+        <div class="mb-3">
+            <label class="form-label">Suggested Openers:</label>
+            <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setMessage(`Hey there! I'm interested in studying with you.`)">Hey there!</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setMessage(`Hey! Looking for a study partner this week.`)">This week?</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setMessage(`Hi, what subjects are you focusing on?`)">Subjects?</button>
+            </div>
+        </div>
+
+        <!-- chat form -->
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.message.label(class="form-label") }}
+                {{ form.message(class="form-control", rows=2, id="messageBox") }}
+                {% for error in form.message.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+        </div>
+    </div>
+
+    <script>
+        function setMessage(text) {
+            const messageBox = document.getElementById("messageBox");
+            if (messageBox) {
+                messageBox.value = text;
+                messageBox.focus();
+            }
+        }
+    </script>
+
+    <!-- modal functionality -->
+    <div class="modal fade" id="studyRoomModal" tabindex="-1" aria-labelledby="studyRoomModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="studyRoomModalLabel">Study Room Booking</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body text-center">
+            <!-- PLACEHOLDER for applet!!! -->
+            <p class="text-muted">study room booking applet text</p>
+            <div class="border p-4 rounded bg-light">
+              <strong>Study Room Availability:</strong><br>
+              <em>[Applet goes here]</em>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
