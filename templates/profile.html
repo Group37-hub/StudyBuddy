@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Preferences</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Edit Your Study Preferences</h1>
+
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+    {% if success %}
+      <p class="success">{{ success }}</p>
+    {% endif %}
+
+    <form action="{{ url_for('edit_preferences') }}" method="POST">
+
+      <label for="year">Academic Year:</label>
+<select name="year" id="year">
+  <option value="1st"       {% if user.study_preferences.year == '1st' %}selected{% endif %}>1st Year</option>
+  <option value="2nd"       {% if user.study_preferences.year == '2nd' %}selected{% endif %}>2nd Year</option>
+  <option value="3rd"       {% if user.study_preferences.year == '3rd' %}selected{% endif %}>3rd Year</option>
+  <option value="4th"       {% if user.study_preferences.year == '4th' %}selected{% endif %}>4th Year</option>
+  <option value="Postgraduate" {% if user.study_preferences.year == 'Postgraduate' %}selected{% endif %}>Postgraduate</option>
+  <option value="PhD"       {% if user.study_preferences.year == 'PhD' %}selected{% endif %}>PhD</option>
+</select>
+
+
+      <label for="subject">Subject:</label>
+      <select name="subject" id="subject">
+        <option value="Computer Science" {% if user.study_preferences.subject == 'Computer Science' %}selected{% endif %}>Computer Science</option>
+        <option value="Physics"          {% if user.study_preferences.subject == 'Physics' %}selected{% endif %}>Physics</option>
+        <option value="Biology"          {% if user.study_preferences.subject == 'Biology' %}selected{% endif %}>Biology</option>
+        <option value="Mathematics"      {% if user.study_preferences.subject == 'Mathematics' %}selected{% endif %}>Mathematics</option>
+      </select>
+
+      <label for="gender">Gender Preference:</label>
+      <select name="gender" id="gender">
+        <option value="Female" {% if user.study_preferences.gender == 'Female' %}selected{% endif %}>Female</option>
+        <option value="Male"   {% if user.study_preferences.gender == 'Male'   %}selected{% endif %}>Male</option>
+        <option value="Either" {% if user.study_preferences.gender == 'Either' %}selected{% endif %}>Either</option>
+      </select>
+
+      <label for="time">Preferred Time:</label>
+      <select name="time" id="time">
+        <option value="Morning"   {% if user.study_preferences.time == 'Morning'   %}selected{% endif %}>Morning</option>
+        <option value="Afternoon" {% if user.study_preferences.time == 'Afternoon' %}selected{% endif %}>Afternoon</option>
+        <option value="Evening"   {% if user.study_preferences.time == 'Evening'   %}selected{% endif %}>Evening</option>
+      </select>
+
+      <label for="location">Preferred Location:</label>
+      <select name="location" id="location">
+        <option value="Library"    {% if user.study_preferences.location == 'Library'    %}selected{% endif %}>Library</option>
+        <option value="Cafe"       {% if user.study_preferences.location == 'Cafe'       %}selected{% endif %}>Cafe</option>
+        <option value="Study Room" {% if user.study_preferences.location == 'Study Room' %}selected{% endif %}>Study Room</option>
+        <option value="Online"     {% if user.study_preferences.location == 'Online'     %}selected{% endif %}>Online</option>
+      </select>
+
+      <button type="submit">Save Changes</button>
+    </form>
+
+    <p><a href="{{ url_for('home') }}">← Back to Home</a></p>
+  </div>
+</body>
+</html>

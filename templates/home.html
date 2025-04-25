@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>StudyBuddy Home</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to Study Buddy!</h1>
+    <p>Connect with fellow learners</p>
+    <a href="{{ url_for('edit_preferences') }}">
+      <button>Edit Study Preferences</button>
+    </a>
+  </div>
+</body>
+</html>
