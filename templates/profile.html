@@ -8,14 +8,9 @@
 <body>
   <div class="container">
     <h1>Edit Your Study Preferences</h1>
-
-    {% if error %}
-      <p class="error">{{ error }}</p>
-    {% endif %}
     {% if success %}
       <p class="success">{{ success }}</p>
     {% endif %}
-
     <form action="{{ url_for('edit_preferences') }}" method="POST">
 
       <label for="year">Academic Year:</label>
