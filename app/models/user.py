@@ -1,6 +1,3 @@
-from models.study_preferences import StudyPreferences
-
-
 class User:
     def __init__(self, name, study_preferences):
         self.name = name

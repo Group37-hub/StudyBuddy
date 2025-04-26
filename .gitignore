@@ -6,8 +6,8 @@ models.iml
 modules.xml
 vcs.xml
 
-models/.idea/
-models/_pycharm_/
+app/models/.idea/
+app/models/_pycharm_/
 
 __pycache__/
 *.pyc
