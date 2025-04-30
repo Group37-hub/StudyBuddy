@@ -1,13 +1,20 @@
-from app import app
-from flask import Flask, render_template, request
+from datetime import datetime, timedelta
 
+from app import app, db
+from flask import Flask, render_template, request, session, flash, redirect, url_for
+
+from app.forms import LoginForm, MessageForm, BookingForm
+from app.models import user
+from app.models.booking import Booking
+from app.models.message import Message
+from app.models.room import Room
 from app.models.user import User
 from app.models.study_preferences import StudyPreferences
 
-user = User(
-    "Andrew",
-    StudyPreferences("1st", "Computer Science", "Male", "Morning", "Library")
-)
+# user = User(
+#     "Andrew",
+#     StudyPreferences("1st", "Computer Science", "Male", "Morning", "Library")
+# )
 
 
 @app.route("/")
@@ -15,26 +22,26 @@ def home():
     return render_template('home.html', title="Home")
 
 
-@app.route('/edit_preferences', methods=['GET', 'POST'])
-def edit_preferences():
-    success = None
-    if request.method == 'POST':
-        year = request.form.get('year')
-        subject = request.form.get('subject')
-        gender = request.form.get('gender')
-        time_pref = request.form.get('time')
-        location = request.form.get('location')
+# @app.route('/edit_preferences', methods=['GET', 'POST'])
+# def edit_preferences():
+#     success = None
+#     if request.method == 'POST':
+#         year = request.form.get('year')
+#         subject = request.form.get('subject')
+#         gender = request.form.get('gender')
+#         time_pref = request.form.get('time')
+#         location = request.form.get('location')
 
-        user.update_study_preferences(
-                year=year,
-                subject=subject,
-                gender=gender,
-                time=time_pref,
-                location=location
-            )
-        success = "Study preferences updated successfully!"
-        return render_template('profile.html', user=user, success=success)
-    return render_template('profile.html', user=user)
+#         user.update_study_preferences(
+#                 year=year,
+#                 subject=subject,
+#                 gender=gender,
+#                 time=time_pref,
+#                 location=location
+#             )
+#         success = "Study preferences updated successfully!"
+#         return render_template('profile.html', user=user, success=success)
+#     return render_template('profile.html', user=user)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
