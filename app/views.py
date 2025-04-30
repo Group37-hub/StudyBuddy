@@ -93,6 +93,25 @@ def messages(user_id):
     upcoming_booking = None
     pending_invitation = None
     user2_booking_invite = None
+    formatted_meeting_date = None
+
+    all_bookings = Booking.query.filter(
+        ((Booking.user1_id== current_user_id) & (Booking.user2_id == other_user.id)) | ((Booking.user1_id == other_user.id) & (Booking.user2_id == current_user_id)),
+        Booking.status != 'past'
+    ).all()
+
+    for booking in all_bookings:
+        if booking.is_past():
+            booking.status = "past"
+        elif booking.user1_id == current_user_id and booking.status == "pending":
+            pending_invitation = booking
+            formatted_meeting_date = format_meeting_date(booking)
+        elif booking.status == "accepted":
+            upcoming_booking = booking
+            formatted_meeting_date = format_meeting_date(booking)
+        elif booking.user2_id == current_user_id and booking.status == "pending":
+            user2_booking_invite = booking
+            formatted_meeting_date = format_meeting_date(booking)
 
     all_bookings = Booking.query.filter(
         ((Booking.user1_id== current_user_id) & (Booking.user2_id == other_user.id)) | ((Booking.user1_id == other_user.id) & (Booking.user2_id == current_user_id)),
@@ -124,7 +143,7 @@ def messages(user_id):
     return render_template("message.html", messages=all_messages, other_user=other_user,
                            form=form, booking_form = booking_form, title="Messages",current_user_id=current_user_id,
                            study_invitation = user2_booking_invite, pending_invitation = pending_invitation,
-                           upcoming_booking = upcoming_booking)
+                           upcoming_booking = upcoming_booking, formatted_meeting_date = formatted_meeting_date)
 
 @app.route("/book-room", methods=["POST"])
 def book_room():
@@ -235,6 +254,11 @@ def get_available_hours(room_id, week_beginning, day):
 
     booked_hours = {booking.hour for booking in booked}
     return [(hour, f"{hour}:00") for hour in all_hours if hour not in booked_hours]
+
+def format_meeting_date(booking):
+    meeting_date = booking.week_beginning + timedelta(days=booking.day)
+    formatted_meeting_date = meeting_date.strftime('%d/%m/%Y')
+    return formatted_meeting_date
 
 # Error handlers
 # See: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
