@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+from app import db
+
 class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user1_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
