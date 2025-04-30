@@ -2,6 +2,7 @@ from flask import Flask
 from config import Config
 from jinja2 import StrictUndefined
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
@@ -10,6 +11,7 @@ app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
 app.config.from_object(Config)
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 from app import views, models
 from app.debug_utils import reset_db
