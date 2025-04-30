@@ -1,6 +1,8 @@
 from app import db
 import datetime
 
+from app.models import User, Message, Room, Booking
+
 
 def reset_db():
     db.drop_all()
