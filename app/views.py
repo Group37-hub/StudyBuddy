@@ -14,10 +14,6 @@ from app.models.room import Room
 def home():
     return render_template('home.html', title="Home")
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    return render_template('login.html', title="Login")
-
 @app.route("/chat", methods=["GET", "POST"])
 def chat():
     return render_template('chat.html', title="Chat")
