@@ -1,7 +1,10 @@
 from app import db
 import datetime
 
-from app.models import User, Message, Room, Booking
+from app.models.booking import Booking
+from app.models.message import Message
+from app.models.room import Room
+from app.models.user import User
 
 
 def reset_db():
