@@ -29,34 +29,36 @@
     <!-- modal trigger button at bottom of the chat box -->
     <!-- room booking options -->
   {% if study_invitation %}
-      <div class="chat-footer mt-auto">
-        <p>{{ other_user.name }} invited you to a meeting on {{ study_invitation.week_beginning }} (day {{ study_invitation.day }}) at {{ study_invitation.hour }}:00</p>
-
-        <form action="{{ url_for('decline_invitation', booking_id=study_invitation.id) }}" method="GET" class="text-end mt-1">
-                    <button type="submit" class="btn btn-sm btn-outline-light btn-danger">Decline</button>
-        </form>
-        <form action="{{ url_for('accept_invitation', booking_id=study_invitation.id) }}" method="GET" class="text-end mt-1">
-        <button type="submit" class="btn btn-sm btn-outline-light btn-success">Accept</button>
-        </form>
+      <div class="alert alert-info" role="alert">
+        <p>{{ other_user.name }} invited you to a meeting on {{ study_invitation.formatted_meeting_date }} at {{ study_invitation.hour }}:00</p>
+        <div class="d-flex justify-content-end gap-2 mt-1">
+            <form action="{{ url_for('accept_invitation', booking_id=study_invitation.id) }}" method="GET">
+                <button type="submit" class="btn btn-outline-success">Accept</button>
+            </form>
+            <form action="{{ url_for('decline_invitation', booking_id=study_invitation.id) }}" method="GET">
+                <button type="submit" class="btn btn-outline-danger">Decline</button>
+            </form>
+        </div>
       </div>
   {% elif upcoming_booking %}
-      <div class="chat-footer mt-auto">
-        <p>You have a room booked with {{ other_user.name }} on {{ upcoming_booking.week_beginning }} (day {{ upcoming_booking.day }}) at {{ upcoming_booking.hour }}:00</p>
-
-        <form action="{{ url_for('decline_invitation', booking_id=upcoming_booking.id) }}" method="GET" class="text-end mt-1">
-                    <button type="submit" class="btn btn-sm btn-outline-light btn-danger">Cancel</button>
-        </form>
+      <div class="alert alert-success" role="alert">
+        <p>You have a room booked with {{ other_user.name }} on {{ upcoming_booking.formatted_meeting_date }} at {{ upcoming_booking.hour }}:00</p>
       </div>
   {% elif pending_invitation %}
-      <div class="chat-footer mt-auto">
-        <p>You have asked {{ other_user.name }} on {{ pending_invitation.week_beginning }} (day {{ pending_invitation.day }}) at {{ pending_invitation.hour }}:00 if they are free</p>
+      <div class="alert alert-warning" role="alert">
+        <p>You have asked {{ other_user.name }} on {{ pending_invitation.formatted_meeting_date }} at {{ pending_invitation.hour }}:00 if they are free</p>
 
-        <form action="{{ url_for('decline_invitation', booking_id=pending_invitation.id) }}" method="GET" class="text-end mt-1">
-                    <button type="submit" class="btn btn-sm btn-outline-light btn-danger">Cancel</button>
+        <form action="{{ url_for('cancel_invitation', booking_id=pending_invitation.id) }}" method="GET" class="text-end mt-1">
+                    <button type="submit" class="btn btn-outline-danger">Cancel</button>
         </form>
       </div>
   {% else %}
-      <div class="chat-footer mt-auto">
+      {% if declined_invitation %}
+          <div class="alert alert-warning" role="alert">
+              <p>The meeting invitation for {{ declined_invitation.formatted_meeting_date }}was declined </p>
+          </div>
+      {% endif %}
+      <div class="alert alert-light" role="alert">
           <button type="button" class="btn btn-light w-100" data-bs-toggle="modal" data-bs-target="#studyRoomModal">
             Ready to book a study room? Click here!
           </button>
@@ -107,13 +109,12 @@
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="studyRoomModalLabel">Study Room Booking</h5>
+            <h5 class="modal-title" id="studyRoomModalLabel">Book a room</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
 
           <div class="modal-body text-center">
             <div class="border p-4 rounded bg-light">
-              <strong>Study Room Availability:</strong><br>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -146,7 +147,6 @@
                     {{ booking_form.hour.label(class="form-label") }}
                     {{ booking_form.hour(class="form-select") }}
                 </div>
-
                 {{ booking_form.week_beginning(type="hidden") }}
                 {{ booking_form.user1_id(type="hidden") }}
                 {{ booking_form.user2_id(type="hidden") }}
@@ -167,4 +167,5 @@
 
   </div>
 </div>
+
 {% endblock %}
