@@ -1,63 +1,148 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Edit Preferences</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-  <div class="container">
-    <h1>Edit Your Study Preferences</h1>
-    {% if success %}
-      <p class="success">{{ success }}</p>
-    {% endif %}
-    <form action="{{ url_for('edit_preferences') }}" method="POST">
+{% extends "base.html" %}
 
-      <label for="year">Academic Year:</label>
-<select name="year" id="year">
-  <option value="1st"       {% if user.study_preferences.year == '1st' %}selected{% endif %}>1st Year</option>
-  <option value="2nd"       {% if user.study_preferences.year == '2nd' %}selected{% endif %}>2nd Year</option>
-  <option value="3rd"       {% if user.study_preferences.year == '3rd' %}selected{% endif %}>3rd Year</option>
-  <option value="4th"       {% if user.study_preferences.year == '4th' %}selected{% endif %}>4th Year</option>
-  <option value="Postgraduate" {% if user.study_preferences.year == 'Postgraduate' %}selected{% endif %}>Postgraduate</option>
-  <option value="PhD"       {% if user.study_preferences.year == 'PhD' %}selected{% endif %}>PhD</option>
-</select>
-
-
-      <label for="subject">Subject:</label>
-      <select name="subject" id="subject">
-        <option value="Computer Science" {% if user.study_preferences.subject == 'Computer Science' %}selected{% endif %}>Computer Science</option>
-        <option value="Physics"          {% if user.study_preferences.subject == 'Physics' %}selected{% endif %}>Physics</option>
-        <option value="Biology"          {% if user.study_preferences.subject == 'Biology' %}selected{% endif %}>Biology</option>
-        <option value="Mathematics"      {% if user.study_preferences.subject == 'Mathematics' %}selected{% endif %}>Mathematics</option>
-      </select>
-
-      <label for="gender">Gender Preference:</label>
-      <select name="gender" id="gender">
-        <option value="Female" {% if user.study_preferences.gender == 'Female' %}selected{% endif %}>Female</option>
-        <option value="Male"   {% if user.study_preferences.gender == 'Male'   %}selected{% endif %}>Male</option>
-        <option value="Either" {% if user.study_preferences.gender == 'Either' %}selected{% endif %}>Either</option>
-      </select>
-
-      <label for="time">Preferred Time:</label>
-      <select name="time" id="time">
-        <option value="Morning"   {% if user.study_preferences.time == 'Morning'   %}selected{% endif %}>Morning</option>
-        <option value="Afternoon" {% if user.study_preferences.time == 'Afternoon' %}selected{% endif %}>Afternoon</option>
-        <option value="Evening"   {% if user.study_preferences.time == 'Evening'   %}selected{% endif %}>Evening</option>
-      </select>
-
-      <label for="location">Preferred Location:</label>
-      <select name="location" id="location">
-        <option value="Library"    {% if user.study_preferences.location == 'Library'    %}selected{% endif %}>Library</option>
-        <option value="Cafe"       {% if user.study_preferences.location == 'Cafe'       %}selected{% endif %}>Cafe</option>
-        <option value="Study Room" {% if user.study_preferences.location == 'Study Room' %}selected{% endif %}>Study Room</option>
-        <option value="Online"     {% if user.study_preferences.location == 'Online'     %}selected{% endif %}>Online</option>
-      </select>
-
-      <button type="submit">Save Changes</button>
-    </form>
-
-    <p><a href="{{ url_for('home') }}">← Back to Home</a></p>
+{% block content %}
+<div class="container py-5 bg-white min-vh-100">
+  <div class="text-center mb-5">
+    <h1 style="font-weight: 600; color: #333;">Meet Your Perfect Study Partners</h1>
+    <p class="text-muted">Start chatting with you perfect match!</p>
   </div>
-</body>
-</html>
+
+  {% if matches %}
+    {% set pieColors = ['#aacde4', '#c6dabf', '#ffd8a9', '#f7c5cc', '#cccccc', '#b5d0ea', '#d4c3e8', '#e0e1da'] %}
+    <div class="row g-5 align-items-start">
+      <div class="col-lg-6">
+        <div class="card p-4 border-0" style="border-radius: 1rem; background-color: #f9f9f9;">
+<div class="table-responsive">
+  <table class="table align-middle text-center mb-0" style="border-collapse: separate; border-spacing: 0 10px;" aria-label="Matches Table">
+    <thead class="table-light">
+      <tr>
+        <th scope="col" style="font-weight: 600;">Name</th>
+        <th scope="col" style="font-weight: 600;">Match %</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for match in matches %}
+      <tr class="clickable-row"
+          style="background-color: {{ pieColors[loop.index0 % pieColors|length] }}; cursor: pointer; position: relative; transition: opacity 0.3s ease;">
+        <td class="py-3">{{ match.name }}</td>
+        <td class="text-muted py-3">{{ (match.score * 100) | round(2) }}%</td>
+      </tr>
+      <tr class="dropdown-content" style="display: none;">
+        <td colspan="2" class="p-3">
+          <a href="{{ url_for('chat', user_id=match.match_user_id) }}" class="btn btn-primary w-100 rounded-3">
+            Start Chatting
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.clickable-row').forEach(row => {
+      row.addEventListener('click', function () {
+        const dropdown = this.nextElementSibling;
+        if (dropdown && dropdown.classList.contains('dropdown-content')) {
+          dropdown.style.display = dropdown.style.display === 'none' ? 'table-row' : 'none';
+        }
+      });
+    });
+  });
+</script>
+        </div>
+      </div>
+
+      <!-- Bar Chart -->
+      <div class="col-lg-6">
+        <div class="card p-4 border-0 d-flex flex-column align-items-center justify-content-center" style="border-radius: 1rem; background-color: #f9f9f9;">
+          <h5 class="mb-4 text-muted" style="font-weight: 500;">Match Distribution</h5>
+          <div style="width: 100%; height: 300px; position: relative;">
+            <canvas id="matchPieChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center mt-5 rounded-4 shadow-sm">
+      No matches found. Try updating your preferences!
+    </div>
+  {% endif %}
+
+  <div class="d-flex justify-content-center mt-5">
+    <a href="{{ url_for('edit_preferences') }}" class="btn btn-primary btn-lg rounded-pill px-5">
+      Edit Preferences
+    </a>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% if matches %}
+<script>
+  const ctx = document.getElementById('matchPieChart').getContext('2d');
+  const pieColors = ['#aacde4', '#c6dabf', '#ffd8a9', '#f7c5cc', '#cccccc', '#b5d0ea', '#d4c3e8', '#e0e1da'];
+
+  const matchBarChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [{% for match in matches %}"{{ match.name }}"{% if not loop.last %}, {% endif %}{% endfor %}],
+      datasets: [{
+        label: 'Match Percentage',
+        data: [{% for match in matches %}{{ (match.score * 100) | round(2) }}{% if not loop.last %}, {% endif %}{% endfor %}],
+        backgroundColor: pieColors.slice(0, {{ matches|length }}),
+        borderColor: '#fff',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Match Percentage (%)'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Study Partners'
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          display: false
+        }
+      }
+    }
+  });
+</script>
+{% endif %}
+
+<!-- Expand/Collapse JS -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.clickable-row').forEach(row => {
+      row.addEventListener('mouseover', () => {
+        row.style.opacity = "0.85";
+      });
+      row.addEventListener('mouseout', () => {
+        row.style.opacity = "1";
+      });
+
+      row.addEventListener('click', function () {
+        const href = this.getAttribute('data-href');
+        if (href) {
+          window.location.href = href;
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

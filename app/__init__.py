@@ -5,8 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import sqlalchemy as sa
 import sqlalchemy.orm as so
-
-
 app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
 app.config.from_object(Config)
@@ -15,6 +13,7 @@ migrate = Migrate(app, db)
 
 from app import views, models
 from app.debug_utils import reset_db
+
 
 @app.shell_context_processor
 def make_shell_context():

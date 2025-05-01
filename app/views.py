@@ -1,49 +1,52 @@
-from datetime import datetime, timedelta
-
-import flask
-
 from app import app, db
-from flask import Flask, render_template, request, session, flash, redirect, url_for
-
+from flask import render_template, request, redirect, url_for, session, flash
+from app.algorithm.main import initialize_algorithm, find_top_matches, compute_similarity
+from datetime import datetime, timedelta
 from app.forms import LoginForm, MessageForm, BookingForm
-from app.models import user
+from app.models.profile import Profile
+from app.models.user import User
 from app.models.booking import Booking
 from app.models.message import Message
 from app.models.room import Room
-from app.models.user import User
-from app.models.study_preferences import StudyPreferences
-
-# user = User(
-#     "Andrew",
-#     StudyPreferences("1st", "Computer Science", "Male", "Morning", "Library")
-# )
 
 
 @app.route("/")
 def home():
     return render_template('home.html', title="Home")
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    return render_template('login.html', title="Login")
+
+@app.route("/chat", methods=["GET", "POST"])
+def chat():
+    return render_template('chat.html', title="Chat")
 
 @app.route('/edit_preferences', methods=['GET', 'POST'])
 def edit_preferences():
     success = None
-    if request.method == 'POST':
-        year = request.form.get('year')
-        subject = request.form.get('subject')
-        gender = request.form.get('gender')
-        time_pref = request.form.get('time')
-        location = request.form.get('location')
+    user_id = 1  # Replace with the logged-in user's ID
+    user = User.query.filter_by(id=user_id).first()
 
-        # user.update_study_preferences(
-        #         year=year,
-        #         subject=subject,
-        #         gender=gender,
-        #         time=time_pref,
-        #         location=location
-        #     )
-        success = "Study preferences updated successfully!"
-        return render_template('profile.html', user=user, success=success)
-    return render_template('profile.html', user=user)
+    if not user:
+        return "User not found", 404
+
+    if request.method == 'POST':
+        profile = Profile.query.filter_by(user_id=user_id).first()
+        if not profile:
+            profile = Profile(user_id=user_id)
+
+        profile.subjects = ','.join(request.form.getlist('subjects'))
+        profile.days_of_week = ','.join(request.form.getlist('days_of_week'))
+        profile.availability = ','.join(request.form.getlist('availability'))
+        profile.preferred_gender = request.form.get('preferred_gender')  # Updated field
+        profile.location_details = ','.join(request.form.getlist('location_details'))
+
+        db.session.add(profile)
+        db.session.commit()
+        success = "Preferences updated successfully!"
+    return render_template('preference_form.html', title="Edit Preferences", success=success, user=user)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -135,11 +138,38 @@ def messages(user_id):
     booking_form.week_beginning.data = get_week_beginning().date()
     booking_form.hour.choices = [(hour, f"{hour}:00") for hour in range(9, 17)]
 
+@app.route('/profile', methods=['GET'])
+def profile():
+    user_id = 1  # Replace with the logged-in user's ID
+    user = User.query.filter_by(id=user_id).first()
 
-    return render_template("message.html", messages=all_messages, other_user=other_user,
-                           form=form, booking_form = booking_form, title="Messages",current_user_id=current_user_id,
-                           study_invitation = user2_booking_invite, pending_invitation = pending_invitation,
-                           upcoming_booking = upcoming_booking, declined_invitation = declined_invitation)
+    if not user:
+        return "User not found", 404
+
+    users = User.query.all()
+    profiles = Profile.query.all()
+
+    users_data = [
+        {
+            "user_id": user.id,
+            "name": user.name,
+            "subjects": profile.subjects.split(","),
+            "days_of_week": profile.days_of_week.split(","),
+            "availability": profile.availability.split(","),
+            "preferred_gender": profile.preferred_gender,  # Updated field
+            "location_details": profile.location_details.split(","),
+        }
+        for user, profile in zip(users, profiles) if profile
+    ]
+
+    import pandas as pd
+    users_df = pd.DataFrame(users_data)
+
+    _, processed_users, q_agent = initialize_algorithm()
+    similarity_matrix = compute_similarity(processed_users, q_agent.q_table)
+    matches = find_top_matches(user_id, similarity_matrix, users_df, top_k=5)
+
+    return render_template('profile.html', title="Your Profile", matches=matches, user=user)
 
 @app.route("/book-room", methods=["POST"])
 def book_room():
