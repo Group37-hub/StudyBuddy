@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4" style="max-width: 700px; height: 90vh;">
+  <div class="chat-wrapper d-flex flex-column h-100">
+
+    <h3 class="text-center mb-3">Chat with {{ other_user.name }}</h3>
+
+    <!-- chat box for messages -->
+    <div class="chat-messages border rounded bg-light p-3 flex-grow-1 d-flex flex-column" style="overflow-y: auto; position: relative;">
+      {% for msg in messages %}
+        <div class="mb-3 d-flex {% if msg.sender_id == current_user_id %}justify-content-end{% else %}justify-content-start{% endif %}">
+          <div class="p-2 rounded {% if msg.sender_id == current_user_id %}bg-success text-white{% else %}bg-secondary text-white{% endif %}" style="max-width: 70%;">
+            <div><strong>{{ 'You' if msg.sender_id == current_user_id else other_user.name }}</strong></div>
+            <div>{{ msg.content }}</div>
+            <div class="text-end small mt-1">{{ msg.timestamp.strftime('%Y-%m-%d %H:%M') }}</div>
+            {% if msg.sender_id == current_user_id %}
+                <!-- delete button -->
+                <form action="{{ url_for('delete_message', msg_id=msg.id) }}" method="GET" class="text-end mt-1">
+                <button type="submit" class="btn btn-sm btn-outline-light btn-danger">Delete</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      {% else %}
+        <p class="text-center text-muted">No messages yet.</p>
+      {% endfor %}
+    </div>
+
+    <!-- modal trigger button at bottom of the chat box -->
+    <!-- room booking options -->
+  {% if study_invitation %}
+      <div class="alert alert-info" role="alert">
+        <p>{{ other_user.name }} invited you to a meeting on {{ study_invitation.formatted_meeting_date }} at {{ study_invitation.hour }}:00</p>
+        <div class="d-flex justify-content-end gap-2 mt-1">
+            <form action="{{ url_for('accept_invitation', booking_id=study_invitation.id) }}" method="GET">
+                <button type="submit" class="btn btn-outline-success">Accept</button>
+            </form>
+            <form action="{{ url_for('decline_invitation', booking_id=study_invitation.id) }}" method="GET">
+                <button type="submit" class="btn btn-outline-danger">Decline</button>
+            </form>
+        </div>
+      </div>
+  {% elif upcoming_booking %}
+      <div class="alert alert-success" role="alert">
+        <p>You have a room booked with {{ other_user.name }} on {{ upcoming_booking.formatted_meeting_date }} at {{ upcoming_booking.hour }}:00</p>
+      </div>
+  {% elif pending_invitation %}
+      <div class="alert alert-warning" role="alert">
+        <p>You have asked {{ other_user.name }} on {{ pending_invitation.formatted_meeting_date }} at {{ pending_invitation.hour }}:00 if they are free</p>
+
+        <form action="{{ url_for('cancel_invitation', booking_id=pending_invitation.id) }}" method="GET" class="text-end mt-1">
+                    <button type="submit" class="btn btn-outline-danger">Cancel</button>
+        </form>
+      </div>
+  {% else %}
+      {% if declined_invitation %}
+          <div class="alert alert-warning" role="alert">
+              <p>The meeting invitation for {{ declined_invitation.formatted_meeting_date }}was declined </p>
+          </div>
+      {% endif %}
+      <div class="alert alert-light" role="alert">
+          <button type="button" class="btn btn-light w-100" data-bs-toggle="modal" data-bs-target="#studyRoomModal">
+            Ready to book a study room? Click here!
+          </button>
+      </div>
+  {% endif %}
+
+    <!-- message input form with opening lines -->
+    <div class="chat-input card mt-3">
+        <div class="card-body">
+
+        <!-- openers -->
+        <div class="mb-3">
+            <label class="form-label">Suggested Openers:</label>
+            <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setMessage(`Hey there! I'm interested in studying with you.`)">Hey there!</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setMessage(`Hey! Looking for a study partner this week.`)">This week?</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setMessage(`Hi, what subjects are you focusing on?`)">Subjects?</button>
+            </div>
+        </div>
+
+        <!-- chat form -->
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.message.label(class="form-label") }}
+                {{ form.message(class="form-control", rows=2, id="messageBox") }}
+                {% for error in form.message.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
+        </div>
+    </div>
+
+    <script>
+        function setMessage(text) {
+            const messageBox = document.getElementById("messageBox");
+            if (messageBox) {
+                messageBox.value = text;
+                messageBox.focus();
+            }
+        }
+    </script>
+
+    <!-- modal functionality -->
+    <div class="modal fade" id="studyRoomModal" tabindex="-1" aria-labelledby="studyRoomModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="studyRoomModalLabel">Book a room</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body text-center">
+            <div class="border p-4 rounded bg-light">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Hour</th>
+                            <th>Available</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for hour, label in booking_form.hour.choices %}
+                        <tr>
+                            <td>{{ label }}</td>
+                            <td class="text-success">✓</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <form method="POST" action="{{ url_for('book_room') }}">
+                {{ booking_form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ booking_form.room_id.label(class="form-label") }}
+                    {{ booking_form.room_id(class="form-select") }}
+                </div>
+
+                <div class="mb-3">
+                    {{ booking_form.day.label(class="form-label") }}
+                    {{ booking_form.day(class="form-select") }}
+                </div>
+
+                <div class="mb-3">
+                    {{ booking_form.hour.label(class="form-label") }}
+                    {{ booking_form.hour(class="form-select") }}
+                </div>
+                {{ booking_form.week_beginning(type="hidden") }}
+                {{ booking_form.user1_id(type="hidden") }}
+                {{ booking_form.user2_id(type="hidden") }}
+
+                <div class="text-center">
+                    {{ booking_form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
