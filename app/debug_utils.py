@@ -1,4 +1,3 @@
-
 from app.models import User, Profile
 from app.algorithm.data import load_mock_users
 
@@ -27,8 +26,7 @@ def reset_db():
                 subjects=",".join(user_data["subjects"]),
                 days_of_week=",".join(user_data["days_of_week"]),
                 availability=",".join(user_data["availability"]),
-                learning_style=user_data["learning_style"],
-                location_type=",".join(user_data["location_type"]),
+                preferred_gender=user_data["preferred_gender"],  # Updated field
                 location_details=",".join(user_data["location_details"])
             )
             db.session.add(profile)

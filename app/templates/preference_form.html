@@ -1,92 +1,60 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div class="container py-5">
-  <div class="text-center mb-5">
-    <h1 class="fw-bold">Edit Your Study Preferences</h1>
-    <p class="text-muted">Customize your study buddy match settings</p>
-  </div>
-
-  {% if success %}
-    <div class="alert alert-success text-center shadow-sm rounded-3">{{ success }}</div>
-  {% endif %}
-
-  <div class="card shadow-sm rounded-4 p-4">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Preferences</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Edit Your Study Preferences</h1>
+    {% if success %}
+      <p class="success">{{ success }}</p>
+    {% endif %}
     <form action="{{ url_for('edit_preferences') }}" method="POST">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label for="subjects" class="form-label">Subjects</label>
-          <select class="form-select" id="subjects" name="subjects">
-            {% for subject in ["Physics", "Chemistry", "Mathematics", "Biology", "English"] %}
-              <option value="{{ subject }}" {% if user.profile and subject == user.profile.subjects %}selected{% endif %}>
-                {{ subject }}
-              </option>
-            {% endfor %}
-          </select>
-        </div>
+      <label for="subjects">Subjects:</label>
+      <select name="subjects" id="subjects">
+        <option value="Physics" {% if 'Physics' in user.profile.subjects.split(',') %}selected{% endif %}>Physics</option>
+        <option value="Mathematics" {% if 'Mathematics' in user.profile.subjects.split(',') %}selected{% endif %}>Mathematics</option>
+        <option value="Biology" {% if 'Biology' in user.profile.subjects.split(',') %}selected{% endif %}>Biology</option>
+        <option value="Computer Science" {% if 'Computer Science' in user.profile.subjects.split(',') %}selected{% endif %}>Computer Science</option>
+      </select>
 
-        <div class="col-md-6">
-          <label for="days_of_week" class="form-label">Days of the Week</label>
-          <select class="form-select" id="days_of_week" name="days_of_week">
-            {% for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] %}
-              <option value="{{ day }}" {% if user.profile and day == user.profile.days_of_week %}selected{% endif %}>
-                {{ day }}
-              </option>
-            {% endfor %}
-          </select>
-        </div>
+      <label for="days_of_week">Days of the Week:</label>
+      <select name="days_of_week" id="days_of_week">
+        <option value="Monday" {% if 'Monday' in user.profile.days_of_week.split(',') %}selected{% endif %}>Monday</option>
+        <option value="Tuesday" {% if 'Tuesday' in user.profile.days_of_week.split(',') %}selected{% endif %}>Tuesday</option>
+        <option value="Wednesday" {% if 'Wednesday' in user.profile.days_of_week.split(',') %}selected{% endif %}>Wednesday</option>
+        <option value="Thursday" {% if 'Thursday' in user.profile.days_of_week.split(',') %}selected{% endif %}>Thursday</option>
+        <option value="Friday" {% if 'Friday' in user.profile.days_of_week.split(',') %}selected{% endif %}>Friday</option>
+      </select>
 
-        <div class="col-md-6">
-          <label for="availability" class="form-label">Availability</label>
-          <select class="form-select" id="availability" name="availability">
-            {% for time in ["Morning (8-11 AM)", "Afternoon (12-4 PM)", "Evening (5-8 PM)", "Night (9 PM-12 AM)"] %}
-              <option value="{{ time }}" {% if user.profile and time == user.profile.availability %}selected{% endif %}>
-                {{ time }}
-              </option>
-            {% endfor %}
-          </select>
-        </div>
+      <label for="availability">Availability:</label>
+      <select name="availability" id="availability">
+        <option value="Morning (8-11 AM)" {% if 'Morning (8-11 AM)' in user.profile.availability.split(',') %}selected{% endif %}>Morning (8-11 AM)</option>
+        <option value="Afternoon (12-3 PM)" {% if 'Afternoon (12-3 PM)' in user.profile.availability.split(',') %}selected{% endif %}>Afternoon (12-3 PM)</option>
+        <option value="Evening (4-7 PM)" {% if 'Evening (4-7 PM)' in user.profile.availability.split(',') %}selected{% endif %}>Evening (4-7 PM)</option>
+      </select>
 
-        <div class="col-md-6">
-          <label for="learning_style" class="form-label">Learning Style</label>
-          <select class="form-select" id="learning_style" name="learning_style">
-            {% for style in ["Auditory", "Visual", "Hands-on", "Reading/Writing"] %}
-              <option value="{{ style }}" {% if user.profile and user.profile.learning_style == style %}selected{% endif %}>
-                {{ style }}
-              </option>
-            {% endfor %}
-          </select>
-        </div>
+    <label for="preferred_gender">Preferred Gender:</label>
+    <select name="preferred_gender" id="preferred_gender">
+        <option value="Male" {% if user.profile.preferred_gender == 'Male' %}selected{% endif %}>Male</option>
+        <option value="Female" {% if user.profile.preferred_gender == 'Female' %}selected{% endif %}>Female</option>
+        <option value="No Preference" {% if user.profile.preferred_gender == 'No Preference' %}selected{% endif %}>No Preference</option>
+    </select>
 
-        <div class="col-md-6">
-          <label for="location_type" class="form-label">Preferred Study Locations</label>
-          <select class="form-select" id="location_type" name="location_type">
-            {% for location in ["Virtual", "in-person"] %}
-              <option value="{{ location }}" {% if user.profile and location == user.profile.location_type %}selected{% endif %}>
-                {{ location }}
-              </option>
-            {% endfor %}
-          </select>
-        </div>
+      <label for="location_details">Preferred Location Details:</label>
+      <select name="location_details" id="location_details">
+        <option value="Zoom" {% if 'Zoom' in user.profile.location_details.split(',') %}selected{% endif %}>Zoom</option>
+        <option value="Cafe" {% if 'Cafe' in user.profile.location_details.split(',') %}selected{% endif %}>Cafe</option>
+        <option value="Library" {% if 'Library' in user.profile.location_details.split(',') %}selected{% endif %}>Library</option>
+        <option value="Teams" {% if 'Teams' in user.profile.location_details.split(',') %}selected{% endif %}>Teams</option>
+      </select>
 
-        <div class="col-md-6">
-          <label for="location_details" class="form-label">Preferred Communication Methods</label>
-          <select class="form-select" id="location_details" name="location_details">
-            {% for method in ["In-person", "Zoom", "Discord", "Microsoft Teams", "Slack"] %}
-              <option value="{{ method }}" {% if user.profile and method == user.profile.location_details %}selected{% endif %}>
-                {{ method }}
-              </option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-center mt-4">
-        <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm px-4">
-          Save Changes
-        </button>
-      </div>
+      <button type="submit">Save Changes</button>
     </form>
+
+    <p><a href="{{ url_for('profile') }}">← Back to Profile</a></p>
   </div>
-</div>
-{% endblock %}
+</body>
+</html>

@@ -14,7 +14,13 @@ def initialize_algorithm():
 
     # Initialize Q-learning agent with default weights
     q_agent = QLearningWeightAdjuster(
-        initial_weights={"subjects": 0.5, "availability": 0.3, "days_of_week" : 0.4, "learning_style": 0.2, "location_type": 0.8, "location_details": 0.6},
+        initial_weights={
+            "subjects": 0.5,
+            "availability": 0.3,
+            "days_of_week": 0.4,
+            "preferred_gender": 0.2,
+            "location_details": 0.6
+        }
     )
 
     return users_df, processed_users, q_agent
