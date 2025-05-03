@@ -2,7 +2,23 @@
 {% import "bootstrap_wtf.html" as wtf %}
 
 {% block content %}
-    <div class="container">
-        {{ wtf.quick_form(form, action="", method="post", id="", novalidate=True, autofocus=False) }}
+  <h2>Login</h2>
+  <form method="POST" action="{{ url_for('login') }}">
+    {{ form.hidden_tag() }}
+
+    <div>
+      {{ form.email.label }}<br>
+      {{ form.email(size=32) }}
     </div>
+    <br>
+
+    <br>
+
+    <div>
+      {{ form.submit() }}
+    </div>
+  </form>
+
+  <br>
+  <a href="{{ url_for('home') }}">Back to home</a>
 {% endblock %}

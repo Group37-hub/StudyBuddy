@@ -1,4 +1,10 @@
+# Ignore Python bytecode files
+*.pyc
 
+# Ignore __pycache__ directories
+__pycache__/
+
+# Ignore .idea/
 .idea/
 inspectionProfiles/
 misc.xml
@@ -18,3 +24,8 @@ study_preferences.cpython-312.pyc
 user.cpython-312.pyc
 
 
+# Ignore app/data/
+app/data/
+
+# Ignore migrations directory
+migrations/

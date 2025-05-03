@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container py-4" style="max-width: 700px; height: 90vh;">
-  <div class="chat-wrapper d-flex flex-column h-100">
 
+<div class="container py-4" style="max-width: 700px; min-height: 80vh; display: flex; flex-direction: column; justify-content: flex-start;">
+  <div class="chat-wrapper d-flex flex-column h-100">
     <h3 class="text-center mb-3">Chat with {{ other_user.name }}</h3>
 
     <!-- chat box for messages -->
     <div class="chat-messages border rounded bg-light p-3 flex-grow-1 d-flex flex-column" style="overflow-y: auto; position: relative;">
-      {% for msg in messages %}
+      {% for msg in all_messages %}
         <div class="mb-3 d-flex {% if msg.sender_id == current_user_id %}justify-content-end{% else %}justify-content-start{% endif %}">
           <div class="p-2 rounded {% if msg.sender_id == current_user_id %}bg-success text-white{% else %}bg-secondary text-white{% endif %}" style="max-width: 70%;">
             <div><strong>{{ 'You' if msg.sender_id == current_user_id else other_user.name }}</strong></div>
@@ -26,7 +26,6 @@
       {% endfor %}
     </div>
 
-    <!-- modal trigger button at bottom of the chat box -->
     <!-- room booking options -->
   {% if study_invitation %}
       <div class="alert alert-info" role="alert">
@@ -167,5 +166,4 @@
 
   </div>
 </div>
-
 {% endblock %}

@@ -9,8 +9,8 @@ class Message(db.Model):
     #flag for if the message should be kept or discarded (default is True)
     keep = db.Column(db.Boolean, default=True)
 
-    sender_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     #link sender to messages they've sent
     sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_messages')
