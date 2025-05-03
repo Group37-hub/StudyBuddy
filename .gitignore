@@ -9,3 +9,6 @@ __pycache__/
 
 # Ignore app/data/
 app/data/
+
+# Ignore migrations directory
+migrations/
