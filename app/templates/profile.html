@@ -29,9 +29,10 @@
       </tr>
       <tr class="dropdown-content" style="display: none;">
         <td colspan="2" class="p-3">
-          <a href="{{ url_for('chat', user_id=match.match_user_id) }}" class="btn btn-primary w-100 rounded-3">
+            <!-- Change to redirect to messages route with the match_user_id -->
+            <a href="{{ url_for('messages', user_id=match.match_user_id) }}" class="btn btn-primary w-100 rounded-3">
             Start Chatting
-          </a>
+            </a>
         </td>
       </tr>
       {% endfor %}

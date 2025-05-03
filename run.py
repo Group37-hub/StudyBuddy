@@ -1,3 +1,3 @@
 from app import app
-from app.models import User, Message
-
+from app.models.user import User
+from app.models.message import Message
