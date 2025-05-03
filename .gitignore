@@ -6,6 +6,23 @@ __pycache__/
 
 # Ignore .idea/
 .idea/
+inspectionProfiles/
+misc.xml
+models.iml
+modules.xml
+vcs.xml
+
+app/models/.idea/
+app/models/_pycharm_/
+
+__pycache__/
+*.pyc
+*.pyo
+
+__init__.cpython-312.pyc
+study_preferences.cpython-312.pyc
+user.cpython-312.pyc
+
 
 # Ignore app/data/
 app/data/

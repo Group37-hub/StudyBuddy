@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Preferences</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Edit Your Study Preferences</h1>
+    {% if success %}
+      <p class="success">{{ success }}</p>
+    {% endif %}
+    <form action="{{ url_for('edit_preferences') }}" method="POST">
+      <label for="subjects">Subjects:</label>
+      <select name="subjects" id="subjects">
+        <option value="Physics" {% if 'Physics' in user.profile.subjects.split(',') %}selected{% endif %}>Physics</option>
+        <option value="Mathematics" {% if 'Mathematics' in user.profile.subjects.split(',') %}selected{% endif %}>Mathematics</option>
+        <option value="Biology" {% if 'Biology' in user.profile.subjects.split(',') %}selected{% endif %}>Biology</option>
+        <option value="Computer Science" {% if 'Computer Science' in user.profile.subjects.split(',') %}selected{% endif %}>Computer Science</option>
+      </select>
+
+      <label for="days_of_week">Days of the Week:</label>
+      <select name="days_of_week" id="days_of_week">
+        <option value="Monday" {% if 'Monday' in user.profile.days_of_week.split(',') %}selected{% endif %}>Monday</option>
+        <option value="Tuesday" {% if 'Tuesday' in user.profile.days_of_week.split(',') %}selected{% endif %}>Tuesday</option>
+        <option value="Wednesday" {% if 'Wednesday' in user.profile.days_of_week.split(',') %}selected{% endif %}>Wednesday</option>
+        <option value="Thursday" {% if 'Thursday' in user.profile.days_of_week.split(',') %}selected{% endif %}>Thursday</option>
+        <option value="Friday" {% if 'Friday' in user.profile.days_of_week.split(',') %}selected{% endif %}>Friday</option>
+      </select>
+
+      <label for="availability">Availability:</label>
+      <select name="availability" id="availability">
+        <option value="Morning (8-11 AM)" {% if 'Morning (8-11 AM)' in user.profile.availability.split(',') %}selected{% endif %}>Morning (8-11 AM)</option>
+        <option value="Afternoon (12-3 PM)" {% if 'Afternoon (12-3 PM)' in user.profile.availability.split(',') %}selected{% endif %}>Afternoon (12-3 PM)</option>
+        <option value="Evening (4-7 PM)" {% if 'Evening (4-7 PM)' in user.profile.availability.split(',') %}selected{% endif %}>Evening (4-7 PM)</option>
+      </select>
+
+    <label for="preferred_gender">Preferred Gender:</label>
+    <select name="preferred_gender" id="preferred_gender">
+        <option value="Male" {% if user.profile.preferred_gender == 'Male' %}selected{% endif %}>Male</option>
+        <option value="Female" {% if user.profile.preferred_gender == 'Female' %}selected{% endif %}>Female</option>
+        <option value="No Preference" {% if user.profile.preferred_gender == 'No Preference' %}selected{% endif %}>No Preference</option>
+    </select>
+
+      <label for="location_details">Preferred Location Details:</label>
+      <select name="location_details" id="location_details">
+        <option value="Zoom" {% if 'Zoom' in user.profile.location_details.split(',') %}selected{% endif %}>Zoom</option>
+        <option value="Cafe" {% if 'Cafe' in user.profile.location_details.split(',') %}selected{% endif %}>Cafe</option>
+        <option value="Library" {% if 'Library' in user.profile.location_details.split(',') %}selected{% endif %}>Library</option>
+        <option value="Teams" {% if 'Teams' in user.profile.location_details.split(',') %}selected{% endif %}>Teams</option>
+      </select>
+
+      <button type="submit">Save Changes</button>
+    </form>
+
+    <p><a href="{{ url_for('profile') }}">← Back to Profile</a></p>
+  </div>
+</body>
+</html>

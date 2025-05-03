@@ -7,7 +7,6 @@ import sqlalchemy as sa
 import sqlalchemy.orm as so
 
 
-
 app = Flask(__name__)
 app.jinja_env.undefined = StrictUndefined
 app.config.from_object(Config)
