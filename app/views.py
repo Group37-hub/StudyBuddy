@@ -16,9 +16,6 @@ from app.models.room import Room
 def home():
     return render_template('home.html', title="Home")
 
-# @app.route("/chat", methods=["GET", "POST"])
-# def chat():
-#     return render_template('chat.html', title="Chat")
 
 @app.route('/edit_preferences', methods=['GET', 'POST'])
 def edit_preferences():
@@ -37,7 +34,7 @@ def edit_preferences():
         profile.subjects = ','.join(request.form.getlist('subjects'))
         profile.days_of_week = ','.join(request.form.getlist('days_of_week'))
         profile.availability = ','.join(request.form.getlist('availability'))
-        profile.preferred_gender = request.form.get('preferred_gender')  # Updated field
+        profile.preferred_gender = request.form.get('preferred_gender')
         profile.location_details = ','.join(request.form.getlist('location_details'))
 
         db.session.add(profile)
@@ -155,6 +152,7 @@ def messages(user_id):
                            pending_invitation=pending_invitation, user2_booking_invite=user2_booking_invite,
                            declined_invitation=declined_invitation, other_user=other_user, study_invitation=study_invitation, current_user_id=current_user_id)
 
+# ─────────────── Profile functions ─────────────── #
 @app.route('/profile', methods=['GET'])
 def profile():
     user_id = 1  # Replace with the logged-in user's ID
@@ -173,7 +171,7 @@ def profile():
             "subjects": profile.subjects.split(","),
             "days_of_week": profile.days_of_week.split(","),
             "availability": profile.availability.split(","),
-            "preferred_gender": profile.preferred_gender,  # Updated field
+            "preferred_gender": profile.preferred_gender,
             "location_details": profile.location_details.split(","),
         }
         for user, profile in zip(users, profiles) if profile
@@ -182,8 +180,10 @@ def profile():
     import pandas as pd
     users_df = pd.DataFrame(users_data)
 
+    # Initialize the algorithm
     _, processed_users, q_agent = initialize_algorithm()
     similarity_matrix = compute_similarity(processed_users, q_agent.q_table)
+    # Find top matches for the current user
     matches = find_top_matches(user_id, similarity_matrix, users_df, top_k=5)
 
     return render_template('profile.html', title="Your Profile", matches=matches, user=user)

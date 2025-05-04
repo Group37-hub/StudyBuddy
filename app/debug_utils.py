@@ -25,7 +25,7 @@ def reset_db():
             user = User(
                 id=user_data["user_id"],
                 name=user_data["name"],
-                email=f"{user_data['name'].lower()}@example.com"
+                email=f"{user_data['name'].lower()}@student.bham.ac.uk"
             )
             db.session.add(user)
 
@@ -34,7 +34,7 @@ def reset_db():
                 subjects=",".join(user_data["subjects"]),
                 days_of_week=",".join(user_data["days_of_week"]),
                 availability=",".join(user_data["availability"]),
-                preferred_gender=user_data["preferred_gender"],  # Updated field
+                preferred_gender=user_data["preferred_gender"],
                 location_details=",".join(user_data["location_details"])
             )
             db.session.add(profile)
