@@ -1,36 +1,79 @@
+from app.models import User, Profile
+from app.algorithm.data import load_mock_users
 from app import db
-from app.models import User, Address
+import datetime
+
+from app.models.booking import Booking
+from app.models.message import Message
+from app.models.room import Room
+from app.models.user import User
+
 
 def reset_db():
+    from app import db
+    # Drop all tables and recreate them
     db.drop_all()
     db.create_all()
+    print("Tables created successfully:")
 
-    u1 = User(username='amy', email='a@b.com', role='Admin')
-    u1.set_password('amy.pw')
-    u2 = User(username='tom', email='t@b.com')
-    u2.set_password('tom.pw')
-    u3 = User(username='yin', email='y@b.com', role='Admin')
-    u3.set_password('yin.pw')
-    u4 = User(username='tariq', email='tariq@b.com')
-    u4.set_password('tariq.pw')
-    u5 = User(username='jo', email='jo@b.com')
-    u5.set_password('jo.pw')
+    # Load mock data
+    mock_users = load_mock_users()
+    print("Mock users loaded:", mock_users)
 
-    u1.addresses.append(Address(tag='home', address='Amy, 22b Baker Street, London SW1', phone='12345678'))
-    u1.addresses.append(Address(tag='work', address='Amy, Amy\'s Company, London SW1', phone='23456789'))
+    try:
+        for _, user_data in mock_users.iterrows():
+            user = User(
+                id=user_data["user_id"],
+                name=user_data["name"],
+                email=f"{user_data['name'].lower()}@student.bham.ac.uk"
+            )
+            db.session.add(user)
 
-    u2.addresses.append(Address(tag='home', address='123 Imaginary Street, Nowhere Town, BS12 3ZZ', phone='01234 5678901'))
-    u2.addresses.append(Address(tag='work', address='456 Phantom Lane, Nonsense City, PO1 9XY', phone='07123 456789'))
-    u3.addresses.append(Address(tag='home', address='789 Fictitious Road, Lostville, WR99 1AA', phone='08000 123456'))
-    u3.addresses.append(Address(tag='work', address='101 Invisible Crescent, Dreamland, EX999 5WP', phone='02345 6789012'))
-    u4.addresses.append(Address(tag='home', address='202 Ghost Place, Madeupburgh, AB12 7ZZ', phone='09123 456789'))
-    u4.addresses.append(Address(tag='work', address='303 Uncharted Avenue, Mythicton, DD03 4BB', phone='0167 123456'))
-    u4.addresses.append(Address(tag='club', address='404 Fakewood Drive, Utopia, PL99 0XX', phone='08765 432109'))
-    u5.addresses.append(Address(tag='work', address='505 Illusory Way, Nonexistentham, LN89 6ZZ', phone='0131 56789012'))
-    u5.addresses.append(Address(tag='home', address='606 Nonexistent Street, Wonderland, G12 8TY', phone='09999 888777'))
-    u5.addresses.append(Address(tag='club', address='707 Parallel Boulevard, Imaginary Town, KT25 1QQ', phone='07500 1234567'))
+            profile = Profile(
+                user_id=user_data["user_id"],
+                subjects=",".join(user_data["subjects"]),
+                days_of_week=",".join(user_data["days_of_week"]),
+                availability=",".join(user_data["availability"]),
+                preferred_gender=user_data["preferred_gender"],
+                location_details=",".join(user_data["location_details"])
+            )
+            db.session.add(profile)
 
+        db.session.commit()
+        print("Database has been reset and mock data has been added.")
+    except Exception as e:
+        print(f"Error during reset_db: {e}")
+        db.session.rollback()
 
-
-    db.session.add_all([u1, u2, u3, u4, u5])
+def test_data():
+    u1 = User(name="Iona", email="iona@iona.com")
+    db.session.add(u1)
     db.session.commit()
+
+    u2 = User(name="Izzy", email="izzy@izzy.com")
+    db.session.add(u2)
+    db.session.commit()
+
+    u3 = User(name="Isla", email="isla@isla.com")
+    db.session.add(u3)
+    db.session.commit()
+
+    u4 = User(name="Irene", email="irene@irene.com")
+    db.session.add(u4)
+    db.session.commit()
+
+    m1 = Message(content="I love eggs", sender_id=u1.id, receiver_id=u2.id)
+    db.session.add(m1)
+    db.session.commit()
+
+    r1 = Room(room_name = "CS1", building = "Computer Science", capacity = 100)
+    db.session.add(r1)
+    db.session.commit()
+
+    r2 = Room(room_name="CS2", building="Computer Science", capacity=100)
+    db.session.add(r2)
+
+    b1 = Booking(user1_id = u1.id, user2_id = u2.id, room_id = r1.id, week_beginning = datetime.datetime.now(), day = 1, hour = 11, status = "pending")
+    db.session.add(b1)
+    db.session.commit()
+
