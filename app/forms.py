@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import TextAreaField, SubmitField, SelectField, IntegerField, DateField
 from wtforms.fields.simple import StringField, PasswordField, HiddenField
-from wtforms.validators import DataRequired, Length, Email, EqualTo
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 
 
 class MessageForm(FlaskForm):
@@ -35,4 +35,8 @@ class SignupForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
+
+    def validate_email(self, email):
+        if not email.data.endswith('@student.bham.ac.uk'):
+            raise ValidationError('Email must end with @student.bham.ac.uk')
 

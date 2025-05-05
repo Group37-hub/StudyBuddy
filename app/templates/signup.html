@@ -2,39 +2,54 @@
 {% import "bootstrap_wtf.html" as wtf %}
 
 {% block content %}
-  <h2>Sign Up</h2>
-  <form method="POST" action="{{ url_for('signup') }}">
-    {{ form.hidden_tag() }}
+  <div class="container py-5">
+    <h2 class="text-center">Sign Up</h2>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <form method="POST" action="{{ url_for('signup') }}">
+          {{ form.hidden_tag() }}
 
-    <div>
-      {{ form.name.label }}<br>
-      {{ form.name(size=32) }}
+          <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", placeholder="Enter your name") }}
+            {% for error in form.name.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control", placeholder="Enter your email") }}
+            <small class="form-text text-muted">Email should end with @student.bham.ac.uk</small>
+            {% for error in form.email.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="mb-3">
+            {{ form.password.label(class="form-label") }}
+            {{ form.password(class="form-control", placeholder="Enter your password") }}
+            {% for error in form.password.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="mb-3">
+            {{ form.confirm_password.label(class="form-label") }}
+            {{ form.confirm_password(class="form-control", placeholder="Confirm your password") }}
+            {% for error in form.confirm_password.errors %}
+              <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="d-grid">
+            {{ form.submit(class="btn btn-primary") }}
+          </div>
+        </form>
+        <div class="text-center mt-3">
+          <a href="{{ url_for('login') }}">Already have an account? Log in</a>
+        </div>
+      </div>
     </div>
-    <br>
-
-    <div>
-      {{ form.email.label }}<br>
-      {{ form.email(size=32) }}
-    </div>
-    <br>
-
-    <div>
-      {{ form.password.label }}<br>
-      {{ form.password(size=32) }}
-    </div>
-    <br>
-
-    <div>
-      {{ form.confirm_password.label }}<br>
-      {{ form.confirm_password(size=32) }}
-    </div>
-    <br>
-
-    <div>
-      {{ form.submit() }}
-    </div>
-  </form>
-
-  <br>
-  <a href="{{ url_for('login') }}">Already have an account? Log in</a>
+  </div>
 {% endblock %}
