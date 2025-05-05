@@ -1,6 +1,8 @@
 from flask import render_template, request, flash, redirect, url_for, session
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from app import app, db
-from app.forms import MessageForm, LoginForm
+from app.forms import MessageForm, LoginForm, SignupForm
 from flask import render_template, request, redirect, url_for, session, flash
 from app.algorithm.main import initialize_algorithm, find_top_matches, compute_similarity
 from datetime import datetime, timedelta
@@ -19,40 +21,77 @@ def home():
 
 @app.route('/edit_preferences', methods=['GET', 'POST'])
 def edit_preferences():
-    success = None
-    user_id = 1  # Replace with the logged-in user's ID
-    user = User.query.filter_by(id=user_id).first()
+    user_id = session.get("user_id")
+    if not user_id:
+        flash("You must be logged in to edit preferences.", "danger")
+        return redirect(url_for("login"))
 
+    user = User.query.filter_by(id=user_id).first()
     if not user:
         return "User not found", 404
 
-    if request.method == 'POST':
-        profile = Profile.query.filter_by(user_id=user_id).first()
-        if not profile:
-            profile = Profile(user_id=user_id)
-
-        profile.subjects = ','.join(request.form.getlist('subjects'))
-        profile.days_of_week = ','.join(request.form.getlist('days_of_week'))
-        profile.availability = ','.join(request.form.getlist('availability'))
-        profile.preferred_gender = request.form.get('preferred_gender')
-        profile.location_details = ','.join(request.form.getlist('location_details'))
-
+    # Ensure profile exists
+    if not user.profile:
+        profile = Profile(
+            user_id=user.id,
+            subjects="",
+            days_of_week="",
+            availability="",
+            preferred_gender="No Preference",
+            location_details=""
+        )
         db.session.add(profile)
         db.session.commit()
-        success = "Preferences updated successfully!"
-    return render_template('preference_form.html', title="Edit Preferences", success=success, user=user)
+
+    profile = user.profile
+    success = None
+
+    if request.method == 'POST':
+        # Get form data
+        profile.subjects = request.form.get('subjects', '')
+        profile.days_of_week = request.form.get('days_of_week', '')
+        profile.availability = request.form.get('availability', '')
+        profile.preferred_gender = request.form.get('preferred_gender', 'No Preference')
+        profile.location_details = request.form.get('location_details', '')
+
+        db.session.commit()
+        flash("Preferences updated successfully!", "success")
+        return redirect(url_for("profile"))
+
+    return render_template('preference_form.html', title="Edit Preferences", user=user, success=success)
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = SignupForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data, method='pbkdf2:sha256')
+        new_user = User(
+            name=form.name.data,
+            email=form.email.data,
+            password=hashed_password
+        )
+        db.session.add(new_user)
+        try:
+            db.session.commit()
+            flash('Account created successfully!', 'success')
+            return redirect(url_for('login'))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred. Please try again.', 'danger')
+    return render_template('signup.html', form=form, title='Sign Up')
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user:
+        if user and check_password_hash(user.password, form.password.data):
             session["user_id"] = user.id
             flash(f"Logged in as {user.name}", "success")
-            return redirect(url_for("home"))
+            return redirect(url_for("edit_preferences"))
         else:
-            flash("User not found", "danger")
+            flash("Invalid email or password.", "danger")
     return render_template("login.html", form=form, title="Login")
 
 @app.route("/logout")
@@ -155,38 +194,28 @@ def messages(user_id):
 # ─────────────── Profile functions ─────────────── #
 @app.route('/profile', methods=['GET'])
 def profile():
-    user_id = 1  # Replace with the logged-in user's ID
-    user = User.query.filter_by(id=user_id).first()
+    user_id = session.get("user_id")
+    if not user_id:
+        flash("Please log in to view your profile.", "warning")
+        return redirect(url_for("login"))
 
+    user = User.query.filter_by(id=user_id).first()
     if not user:
         return "User not found", 404
 
-    users = User.query.all()
-    profiles = Profile.query.all()
+    # Initialize the algorithm and exclude current user from match pool
+    users_df, processed_users, q_agent = initialize_algorithm()
 
-    users_data = [
-        {
-            "user_id": user.id,
-            "name": user.name,
-            "subjects": profile.subjects.split(","),
-            "days_of_week": profile.days_of_week.split(","),
-            "availability": profile.availability.split(","),
-            "preferred_gender": profile.preferred_gender,
-            "location_details": profile.location_details.split(","),
-        }
-        for user, profile in zip(users, profiles) if profile
-    ]
+    # Ensure the user is in the dataset (as they were not excluded from preprocessing)
+    if user_id not in users_df["user_id"].values:
+        flash("Your profile data is incomplete. Please update your preferences.", "warning")
+        return redirect(url_for("edit_preferences"))
 
-    import pandas as pd
-    users_df = pd.DataFrame(users_data)
-
-    # Initialize the algorithm
-    _, processed_users, q_agent = initialize_algorithm()
     similarity_matrix = compute_similarity(processed_users, q_agent.q_table)
-    # Find top matches for the current user
     matches = find_top_matches(user_id, similarity_matrix, users_df, top_k=5)
 
     return render_template('profile.html', title="Your Profile", matches=matches, user=user)
+
 
 @app.route("/book-room", methods=["POST"])
 def book_room():

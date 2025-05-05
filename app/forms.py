@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import TextAreaField, SubmitField, SelectField, IntegerField, DateField
 from wtforms.fields.simple import StringField, PasswordField, HiddenField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Length, Email, EqualTo
+
 
 class MessageForm(FlaskForm):
     message = TextAreaField('Message', validators=[DataRequired()])
@@ -9,7 +10,7 @@ class MessageForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired()])
-    #password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log In')
 
 class BookingForm(FlaskForm):
@@ -27,4 +28,11 @@ class BookingForm(FlaskForm):
 class InvitationResponseForm(FlaskForm):
     accept = SubmitField('Accept')
     decline = SubmitField('Decline')
+
+class SignupForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired(), Length(min=2, max=100)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Sign Up')
 

@@ -4,8 +4,8 @@
 <div class="container py-5 bg-white min-vh-100">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-      <h1 class="fw-semibold text-dark">Find Your Ideal Study Partner</h1>
-      <p class="text-muted mb-0">We’ve matched you based on your preferences and subjects!</p>
+      <h1 class="fw-semibold text-dark">Welcome, {{ user.name }}!</h1>
+      <p class="text-muted mb-0">We’ve matched you based on your preferences!</p>
     </div>
     <a href="{{ url_for('edit_preferences') }}" class="btn btn-outline-primary rounded-pill px-4">
       Edit Preferences
