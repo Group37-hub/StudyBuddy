@@ -1,3 +1,5 @@
+from werkzeug.security import generate_password_hash
+
 from app.models import User, Profile
 from app.algorithm.data import load_mock_users
 from app import db
@@ -25,7 +27,8 @@ def reset_db():
             user = User(
                 id=user_data["user_id"],
                 name=user_data["name"],
-                email=f"{user_data['name'].lower()}@student.bham.ac.uk"
+                email=f"{user_data['name'].lower()}@student.bham.ac.uk",
+                password = generate_password_hash("default_password")
             )
             db.session.add(user)
 
