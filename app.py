@@ -10,25 +10,26 @@ user = User(
     StudyPreferences("1st", "Computer Science", "Male", "Morning", "Library")
 )
 
+
 @app.route('/')
 def home():
     return render_template('home.html')
 
 
-@app.route('/edit_preferences', methods=['GET', 'POST'])
-def edit_preferences():
+@app.route('/update_preferences', methods=['GET', 'POST'])
+def update_preferences():
     if request.method == 'POST':
         year = request.form['year']
         subject = request.form['subject']
         gender = request.form['gender']
-        time_preference = request.form['time']
+        time = request.form['time']
         location = request.form['location']
 
         user.update_study_preferences(
             year=year,
             subject=subject,
             gender=gender,
-            time=time_preference,
+            time=time,
             location=location
         )
 

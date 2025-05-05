@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Edit Preferences</title>
+  <title>Update Preferences</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
   <div class="container">
-    <h1>Edit Your Study Preferences</h1>
+    <h1>Update Your Study Preferences</h1>
   {% if success %}
     <p class="success">{{ success }}</p>
   {% endif %}
-    <form action="{{ url_for('edit_preferences') }}" method="POST">
+    <form action="{{ url_for('update_preferences') }}" method="POST">
 
       <label for="year">Academic Year:</label>
 <select name="year" id="year">
