@@ -105,3 +105,12 @@ def load_mock_users():
         }
     ]
     return pd.DataFrame(mock_users)
+
+def load_mock_rooms():
+    mock_rooms = [
+        {"room_name": "CS1", "building": "Computer Science", "capacity": 100},
+        {"room_name": "LG1", "building": "Library", "capacity": 20},
+        {"room_name": "Cafe", "building": "Student Union", "capacity": 15},
+        {"room_name": "ML Lab", "building": "Engineering", "capacity": 30},
+    ]
+    return mock_rooms
