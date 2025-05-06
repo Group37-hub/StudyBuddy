@@ -175,21 +175,13 @@ def messages(user_id):
     booking_form.room_id.choices = [(room.id, room.room_name) for room in rooms]
     booking_form.user1_id.data = current_user_id
     booking_form.user2_id.data = other_user.id
-    booking_form.week_beginning.data = get_week_beginning().date()
+    booking_form.week_beginning.data = get_week_beginning()
     booking_form.hour.choices = [(hour, f"{hour}:00") for hour in range(9, 17)]
-
-    study_invitation = None
-    # Determine if there's an invitation
-    for booking in all_bookings:
-        if booking.status == "pending" and booking.user1_id == current_user_id:
-            study_invitation = booking
-            break  # If only one invitation is needed, exit the loop
-
 
     return render_template('message.html', title="Messages", form=form, booking_form=booking_form,
                            all_messages=all_messages, upcoming_booking=upcoming_booking,
-                           pending_invitation=pending_invitation, user2_booking_invite=user2_booking_invite,
-                           declined_invitation=declined_invitation, other_user=other_user, study_invitation=study_invitation, current_user_id=current_user_id)
+                           pending_invitation=pending_invitation, study_invitation=user2_booking_invite,
+                           declined_invitation=declined_invitation, other_user=other_user, current_user_id=current_user_id)
 
 # ─────────────── Profile functions ─────────────── #
 @app.route('/profile', methods=['GET'])
@@ -263,9 +255,11 @@ def book_room():
         )
         db.session.add(new_booking)
         db.session.commit()
+        
         flash("Room added successfully", "success")
-
         return redirect(url_for('messages', user_id=user2_id))
+
+    flash("Please fill in the form correctly", "danger")
     return redirect(url_for('messages', user_id=form.user2_id))
 
 @app.route("/delete_message/<int:msg_id>")
@@ -288,6 +282,7 @@ def decline_invitation(booking_id):
     booking = Booking.query.get_or_404(booking_id)
 
     if "user_id" not in session:
+        flash("Please log in first.", "warning")
         return redirect(url_for("messages", user_id=booking.user1_id))
 
     booking.status = "declined"
@@ -300,6 +295,7 @@ def cancel_invitation(booking_id):
     booking = Booking.query.get_or_404(booking_id)
 
     if "user_id" not in session:
+        flash("Please log in first.", "warning")
         return redirect(url_for("messages", user_id=booking.user2_id))
 
     booking.status = "cancelled"
@@ -331,7 +327,7 @@ def accept_invitation(booking_id):
 def get_week_beginning():
     # Returns the start of the week
     today = datetime.today()
-    return today - timedelta(days=today.weekday())
+    return (today - timedelta(days=today.weekday())).date()
 
 def get_available_hours(room_id, week_beginning, day):
     # Gets available hours for rooms
