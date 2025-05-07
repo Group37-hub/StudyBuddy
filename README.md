@@ -99,5 +99,6 @@ This project aims to combat academic isolation and improve access to study space
 |Angel Yao [2753805]| [25%]            | Coded the messaging feature and set up the corresponding database.|
 |                   |                  | Merged Angel branch with main and sorted out conflicts.           |
 |                   |                  | Compiled and edited video.                                        |
-| []                | [%]              | [Task 1]                                                          |
-|                   |                  |                                                                   |
+|Amal      [2877627]| [25%]            | Implemented the study preferences update feature                  |
+|                   |                  | Wrote unit tests to validate preferences update functionality     |
+|                   |                  | Contributed feature updates and worked with Git version control   |
