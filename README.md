@@ -72,7 +72,7 @@ This project aims to combat academic isolation and improve access to study space
     *   User logout
 *   **Validation:**
     * To Register a new user onto StudyBuddy, any input address in the Email field must end with "@student.bham.ac.uk".
-    * Password in Registration must be typed twice in respective fields for confirmation
+    * Password in Registration must be typed twice in respective fields for confirmation.
 *   **Profile & Preferences:**
     *   Editing and updating user profiles with study preferences (subjects, availability, preferred gender, location details).
 *   **Matching System:**
