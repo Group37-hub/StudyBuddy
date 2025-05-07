@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash
 
 from app.models import User, Profile
-from app.algorithm.data import load_mock_users
+from app.algorithm.data import load_mock_users, load_mock_rooms
 from app import db
 import datetime
 
