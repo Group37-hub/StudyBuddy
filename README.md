@@ -89,9 +89,13 @@ This project aims to combat academic isolation and improve access to study space
 
 ## Contributions
 
-*   **Shreyas**
-    *   Implemented the matching functionality using user preference data.
-    *   Set up the database.
-    *   Designed the profile page.
-    *   Set up the project structure.
-    *   Authored the README file. 
+| Student Name & ID | Contribution (%) | Key Contributions / Tasks Completed                               |
+|-------------------|------------------|-------------------------------------------------------------------|
+| Shreyas [2746031] | [25%]            | Implemented the matching functionality using user preference data.|
+|                   |                  | Set up the database.                                              |
+|                   |                  | Designed the profile page.                                        |
+|                   |                  | Set up the project structure.                                     |
+|                   |                  | Compiled the README documentation.                                |
+|                   |                  |                                                                   |
+| []                | [%]              | [Task 1]                                                          |
+|                   |                  |                                                                   |
