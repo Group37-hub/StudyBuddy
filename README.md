@@ -6,6 +6,10 @@
 
 This project aims to combat academic isolation and improve access to study spaces for University of Birmingham students. Many students experience loneliness and struggle to find suitable, uncrowded study areas. StudyBuddy addresses this by connecting students with similar academic interests and study habits, fostering a supportive community. This encourages collaborative study, which can lead to better networking, reduced procrastination, increased confidence, improved mental well-being, and enhanced learning. The app provides an efficient way to find partners, message them, and reserve study spaces, making campus study more accessible and engaging.
 
+## Demo Video
+
+https://drive.google.com/file/d/1hV3pGF2VtVBRJC9huCyye070WN4Flee6/view?usp=share_link
+
 ## How to Run the Project
 
 1.  **Clone the repository:**
