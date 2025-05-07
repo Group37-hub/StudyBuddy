@@ -70,6 +70,9 @@ This project aims to combat academic isolation and improve access to study space
 *   **User Management:**
     *   User signup and login
     *   User logout
+*   **Validation:**
+    * To Register a new user onto StudyBuddy, any input address in the Email field must end with "@student.bham.ac.uk".
+    * Password in Registration must be typed twice in respective fields for confirmation
 *   **Profile & Preferences:**
     *   Editing and updating user profiles with study preferences (subjects, availability, preferred gender, location details).
 *   **Matching System:**
@@ -102,3 +105,6 @@ This project aims to combat academic isolation and improve access to study space
 |Amal      [2877627]| [25%]            | Implemented the study preferences update feature                  |
 |                   |                  | Wrote unit tests to validate preferences update functionality     |
 |                   |                  | Contributed feature updates and worked with Git version control   |
+|Eliot      [2468876]| [25%]           | Implemented the registration and login features for StudyBuddy    |
+|                   |                  | Implemented UoB email validation check for registration           |
+|                   |                  | Added a debug feature to the code                                 |
