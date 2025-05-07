@@ -96,6 +96,8 @@ This project aims to combat academic isolation and improve access to study space
 |                   |                  | Designed the profile page.                                        |
 |                   |                  | Set up the project structure.                                     |
 |                   |                  | Compiled the README documentation.                                |
-|                   |                  |                                                                   |
+|Angel Yao [2753805]| [25%]            | Coded the messaging feature and set up the corresponding database.|
+|                   |                  | Merged Angel branch with main and sorted out conflicts.           |
+|                   |                  | Compiled and edited video.                                        |
 | []                | [%]              | [Task 1]                                                          |
 |                   |                  |                                                                   |
