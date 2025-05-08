@@ -14,11 +14,13 @@ from app.models.message import Message
 from app.models.room import Room
 
 
+# Displays the home page
 @app.route("/")
 def home():
     return render_template('home.html', title="Home")
 
 
+# Allows users to edit their study preferences.
 @app.route('/edit_preferences', methods=['GET', 'POST'])
 def edit_preferences():
     user_id = session.get("user_id")
@@ -61,6 +63,7 @@ def edit_preferences():
     return render_template('preference_form.html', title="Edit Preferences", user=user, success=success)
 
 
+# Handles user registration.
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignupForm()
@@ -81,6 +84,7 @@ def signup():
             flash('An error occurred. Please try again.', 'danger')
     return render_template('signup.html', form=form, title='Sign Up')
 
+# Handles user login.
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
@@ -94,6 +98,7 @@ def login():
             flash("Invalid email or password.", "danger")
     return render_template("login.html", form=form, title="Login")
 
+# Handles user logout.
 @app.route("/logout")
 def logout():
     session.pop("user_id", None)
