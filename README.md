@@ -98,17 +98,20 @@ https://drive.google.com/file/d/1hV3pGF2VtVBRJC9huCyye070WN4Flee6/view?usp=share
 
 | Student Name & ID | Contribution (%) | Key Contributions / Tasks Completed                               |
 |-------------------|------------------|-------------------------------------------------------------------|
-| Shreyas [2746031] | [25%]            | Implemented the matching functionality using user preference data.|
+| Shreyas [2746031] | [20%]            | Implemented the matching functionality using user preference data.|
 |                   |                  | Set up the database.                                              |
 |                   |                  | Designed the profile page.                                        |
 |                   |                  | Set up the project structure.                                     |
 |                   |                  | Compiled the README documentation.                                |
-|Angel Yao [2753805]| [25%]            | Coded the messaging feature and set up the corresponding database.|
+|Angel Yao [2753805]| [20%]            | Coded the messaging feature and set up the corresponding database.|
 |                   |                  | Merged Angel branch with main and sorted out conflicts.           |
 |                   |                  | Compiled and edited video.                                        |
-|Amal      [2877627]| [25%]            | Implemented the study preferences update feature                  |
+|Amal      [2877627]| [20%]            | Implemented the study preferences update feature                  |
 |                   |                  | Wrote unit tests to validate preferences update functionality     |
 |                   |                  | Contributed feature updates and worked with Git version control   |
-|Eliot      [2468876]| [25%]           | Implemented the registration and login features for StudyBuddy    |
+|Eliot      [2468876]| [20%]           | Implemented the registration and login features for StudyBuddy    |
 |                   |                  | Implemented UoB email validation check for registration           |
 |                   |                  | Added a debug feature to the code                                 |
+|Isabelle [2869610} |[20%]             | Implemented the room booking and study invitation functionality   |
+|                   |                  | Added mock room data                                              |     
+|                   |                  | Wrote pytests for room booking and study invitation functionality |
